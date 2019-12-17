@@ -1,6 +1,6 @@
 # WalkableMap
 
-```
+```haskell
 import Data.Point
 import qualified Data.PriorityQueue as PQ
 import qualified Data.WalkableMap as WM
