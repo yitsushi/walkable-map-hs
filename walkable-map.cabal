@@ -1,0 +1,36 @@
+cabal-version:       >=1.10
+name:                walkable-map
+version:             0.1.0.0
+synopsis:            Solve Pathfining with simple Map
+description:         Pathfinding on Map '(Int, Int) Tile' data structure
+bug-reports:         https://github.com/yitsushi/walkable-map-hs/issues
+homepage:            https://github.com/yitsushi/walkable-map-hs
+license:             BSD3
+license-file:        LICENSE
+author:              Balazs Nadasdi
+maintainer:          yitsushi@pm.me
+copyright:           2019 Balazs Nadasdi
+category:            Data
+build-type:          Simple
+extra-source-files:  README.md CHANGELOG.md
+
+library
+  hs-source-dirs:    src
+  exposed-modules:
+    Data.WalkableMap
+    Data.Point
+    Data.PriorityQueue
+  build-depends:       base >=4.12 && <4.14
+
+test-suite test-walkable-map
+  type:              exitcode-stdio-1.0
+  hs-source-dirs:    test
+  main-is:           Spec.hs
+  build-depends:     walkable-map,
+                     base >= 4 && < 5,
+                     unordered-containers >= 0.2,
+                     HTF >= 0.13 && < 0.14
+
+source-repository head
+  type:     git
+  location: https://github.com/yitsushi/walkable-map-hs.git
