@@ -4,6 +4,7 @@ import qualified Data.Map.Strict as M
 import qualified Data.Maybe as Maybe
 import Data.Point
 import qualified Data.PriorityQueue as PQ
+import Debug.Trace
 
 data WalkableMap a =
   WalkableMap
@@ -72,6 +73,7 @@ pathTo from to m
 pathToClosestValue ::
      (Eq a) => PQ.Item [Point] -> a -> WalkableMap a -> Maybe (PQ.Item [Point])
 pathToClosestValue from to m
+  | trace (show from) False = undefined
   | null queue = Nothing
   | valueAt m (PQ.location from) == to = Just from
   | otherwise = pathToClosestValue next to m {_queue = queue'}
