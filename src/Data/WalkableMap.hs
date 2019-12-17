@@ -32,6 +32,12 @@ update pos value m = m {content = new}
   where
     new = M.insert pos value (content m)
 
+exists :: (Eq a) => Point -> WalkableMap a -> Bool
+exists pos m =
+  case M.lookup pos (content m) of
+    Nothing -> False
+    Just _ -> True
+
 valueAt :: (Eq a) => WalkableMap a -> Point -> a
 valueAt m pos = Maybe.fromMaybe (defaultValue m) $ M.lookup pos (content m)
 
