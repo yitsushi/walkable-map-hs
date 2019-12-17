@@ -4,7 +4,6 @@ import qualified Data.Map.Strict as M
 import qualified Data.Maybe as Maybe
 import Data.Point
 import qualified Data.PriorityQueue as PQ
-import Debug.Trace
 
 data WalkableMap a =
   WalkableMap
@@ -42,6 +41,9 @@ exists pos m =
 valueAt :: (Eq a) => WalkableMap a -> Point -> a
 valueAt m pos = Maybe.fromMaybe (defaultValue m) $ M.lookup pos (content m)
 
+findValue :: (Eq a) => a -> WalkableMap a -> [Point]
+findValue value = M.keys . M.filter (== value) . content
+
 partition :: (Eq a) => Int -> [a] -> [[a]]
 partition _ [] = []
 partition n xs = take n xs : partition n (drop n xs)
@@ -57,6 +59,7 @@ pathTo from to m
   | PQ.location from == to = Just from
   | otherwise = pathTo next to m {_queue = queue', _visited = visited}
   where
+    visited = PQ.location from : _visited m
     queue = foldl PQ.addItem (_queue m) scored
       where
         next = filter (`notElem` visited) $ neighbors (PQ.location from) m
@@ -68,24 +71,27 @@ pathTo from to m
             , PQ.extra = x : PQ.extra from
             }
     (next, queue') = PQ.popMinimum queue
-    visited = PQ.location from : _visited m
 
 pathToClosestValue ::
      (Eq a) => PQ.Item [Point] -> a -> WalkableMap a -> Maybe (PQ.Item [Point])
 pathToClosestValue from to m
-  | trace (show from) False = undefined
   | null queue = Nothing
   | valueAt m (PQ.location from) == to = Just from
-  | otherwise = pathToClosestValue next to m {_queue = queue'}
+  | otherwise =
+    pathToClosestValue next to m {_queue = queue', _visited = visited}
   where
+    visited = PQ.location from : _visited m
     queue = foldl PQ.addItem (_queue m) scored
       where
         next = filter (`notElem` visited) $ neighbors (PQ.location from) m
         scored = map mapping next
         mapping x =
-          PQ.Item {PQ.location = x, PQ.score = 1, PQ.extra = x : PQ.extra from}
+          PQ.Item
+            { PQ.location = x
+            , PQ.score = 1 + PQ.score from
+            , PQ.extra = x : PQ.extra from
+            }
     (next, queue') = PQ.popMinimum queue
-    visited = PQ.location from : _visited m
 
 neighbors :: (Eq a) => Point -> WalkableMap a -> [Point]
 neighbors (xo, yo) area =
