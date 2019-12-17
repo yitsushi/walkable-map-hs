@@ -31,7 +31,7 @@ updateScore :: Queue a -> Item a -> Queue a
 updateScore [] _ = []
 updateScore (x:xs) item
   | location x == location item =
-    if score x < score item
+    if score item < score x
       then item : xs
       else x : xs
   | otherwise = x : updateScore xs item
