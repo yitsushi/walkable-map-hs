@@ -68,6 +68,21 @@ pathTo from to m
             }
     (next, queue') = PQ.popMinimum queue
 
+pathToClosestValue ::
+     (Eq a) => PQ.Item [Point] -> a -> WalkableMap a -> Maybe (PQ.Item [Point])
+pathToClosestValue from to m
+  | null queue = Nothing
+  | valueAt m (PQ.location from) == to = Just from
+  | otherwise = pathToClosestValue next to m {_queue = queue'}
+  where
+    queue = foldl PQ.addItem (_queue m) scored
+      where
+        next = neighbors (PQ.location from) m
+        scored = map mapping next
+        mapping x =
+          PQ.Item {PQ.location = x, PQ.score = 1, PQ.extra = x : PQ.extra from}
+    (next, queue') = PQ.popMinimum queue
+
 neighbors :: (Eq a) => Point -> WalkableMap a -> [Point]
 neighbors (xo, yo) area =
   filter (\x -> valueAt area x `notElem` exclude) possible

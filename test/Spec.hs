@@ -1,3 +1,4 @@
+import qualified Data.Point as P
 import qualified Data.PriorityQueue as PQ
 import Test.Hspec
 
@@ -11,13 +12,18 @@ simpleQueue =
 
 main :: IO ()
 main =
-  hspec $
-  describe "updateScore" $ do
-    it "existing value" $
-      (PQ.location . fst . PQ.popMinimum . PQ.updateScore simpleQueue)
-        PQ.Item {PQ.location = (1, 2), PQ.score = 2, PQ.extra = "Anything else"} `shouldBe`
-      (1, 2)
-    it "non-existing value" $
-      (PQ.location . fst . PQ.popMinimum . PQ.updateScore simpleQueue)
-        PQ.Item {PQ.location = (7, 2), PQ.score = 1, PQ.extra = "Anything else"} `shouldBe`
-      (1, 1)
+  hspec $ do
+    describe "updateScore" $ do
+      it "existing value" $
+        (PQ.location . fst . PQ.popMinimum . PQ.updateScore simpleQueue)
+          PQ.Item
+            {PQ.location = (1, 2), PQ.score = 2, PQ.extra = "Anything else"} `shouldBe`
+        (1, 2)
+      it "non-existing value" $
+        (PQ.location . fst . PQ.popMinimum . PQ.updateScore simpleQueue)
+          PQ.Item
+            {PQ.location = (7, 2), PQ.score = 1, PQ.extra = "Anything else"} `shouldBe`
+        (1, 1)
+    describe "point" $ do
+      it "add" $ (2, 3) P.<+> (1, 2) `shouldBe` (3, 5)
+      it "add" $ (2, 3) P.<+> (-1, -2) `shouldBe` (1, 1)
