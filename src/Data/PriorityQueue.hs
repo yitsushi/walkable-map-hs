@@ -8,7 +8,7 @@ data Item a =
     , score :: Int
     , extra :: a
     }
-  deriving (Show)
+  deriving (Show, Eq)
 
 type Queue a = [Item a]
 
