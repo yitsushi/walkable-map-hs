@@ -55,8 +55,8 @@ pathTo ::
   -> WalkableMap a
   -> Maybe (PQ.Item [Point])
 pathTo from to m
-  | null queue = Nothing
   | PQ.location from == to = Just from
+  | null queue = Nothing
   | otherwise = pathTo next to m {_queue = queue', _visited = visited}
   where
     visited = PQ.location from : _visited m
