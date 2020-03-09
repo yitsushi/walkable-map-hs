@@ -1,0 +1,45 @@
+name:                walkable-map
+version:             0.1.0.0
+github:              "yitsushi/walkable-map-hs"
+license:             BSD3
+license-file:        LICENSE
+author:              "Balazs Nadasdi"
+maintainer:          "efertone@pm.me"
+copyright:           "2019 Balazs Nadasdi"
+category:            "Data"
+
+extra-source-files:
+- README.md
+- LICENSE
+
+synopsis:            Solve Pathfining with simple Map
+description:         Pathfinding on Map '(Int, Int) Tile' data structure
+
+dependencies:
+- Cabal
+- base >= 4.7 && < 5
+- containers
+- unordered-containers
+- hspec
+
+library:
+  source-dirs:                src
+  #generated-exposed-modules:  Paths_walkable_map
+  #exposed-modules:
+  #  Data.WalkableMap
+  #  Data.Point
+  #  Data.PriorityQueue
+
+
+tests:
+  walkable-map:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - walkable-map
+    - hspec
+    - HTF

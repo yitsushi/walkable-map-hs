@@ -1,40 +1,63 @@
-cabal-version:       >=1.10
-name:                walkable-map
-version:             0.1.0.0
-synopsis:            Solve Pathfining with simple Map
-description:         Pathfinding on Map '(Int, Int) Tile' data structure
-bug-reports:         https://github.com/yitsushi/walkable-map-hs/issues
-homepage:            https://github.com/yitsushi/walkable-map-hs
-license:             BSD3
-license-file:        LICENSE
-author:              Balazs Nadasdi
-maintainer:          yitsushi@pm.me
-copyright:           2019 Balazs Nadasdi
-category:            Data
-build-type:          Simple
-extra-source-files:  README.md CHANGELOG.md
+cabal-version: 1.12
 
-library
-  hs-source-dirs:    src
-  exposed-modules:
-    Data.WalkableMap
-    Data.Point
-    Data.PriorityQueue
-  build-depends:     base >=4.12 && <4.14,
-                     containers >= 0.6
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 9e556cd65e93d303bc7c3ddebd9db5fdc0e78ec2bacefe22af23bdd1532627ac
 
-test-suite test-walkable-map
-  type:              exitcode-stdio-1.0
-  hs-source-dirs:    test
-  main-is:           Spec.hs
-  build-depends:     walkable-map,
-                     base >= 4 && < 5,
-                     unordered-containers >= 0.2,
-                     containers >= 0.6,
-                     HTF >= 0.13 && < 0.14,
-                     hspec
-
+name:           walkable-map
+version:        0.1.0.0
+synopsis:       Solve Pathfining with simple Map
+description:    Pathfinding on Map '(Int, Int) Tile' data structure
+category:       Data
+homepage:       https://github.com/yitsushi/walkable-map-hs#readme
+bug-reports:    https://github.com/yitsushi/walkable-map-hs/issues
+author:         Balazs Nadasdi
+maintainer:     efertone@pm.me
+copyright:      2019 Balazs Nadasdi
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    LICENSE
 
 source-repository head
-  type:     git
-  location: https://github.com/yitsushi/walkable-map-hs.git
+  type: git
+  location: https://github.com/yitsushi/walkable-map-hs
+
+library
+  exposed-modules:
+      Data.Point
+      Data.PriorityQueue
+      Data.WalkableMap
+  other-modules:
+      Paths_walkable_map
+  hs-source-dirs:
+      src
+  build-depends:
+      Cabal
+    , base >=4.7 && <5
+    , containers
+    , hspec
+    , unordered-containers
+  default-language: Haskell2010
+
+test-suite walkable-map
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_walkable_map
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      Cabal
+    , HTF
+    , base >=4.7 && <5
+    , containers
+    , hspec
+    , unordered-containers
+    , walkable-map
+  default-language: Haskell2010

@@ -1,7 +1,7 @@
-import qualified Data.Point as P
+import qualified Data.Point         as P
 import qualified Data.PriorityQueue as PQ
-import qualified Data.WalkableMap as WM
-import Test.Hspec
+import qualified Data.WalkableMap   as WM
+import           Test.Hspec
 
 createItem :: (Int, Int) -> Int -> String -> PQ.Item String
 createItem p s e = PQ.Item {PQ.location = p, PQ.score = s, PQ.extra = e}

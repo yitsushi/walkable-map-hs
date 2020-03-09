@@ -1,17 +1,21 @@
+{-# LANGUAGE RecordWildCards #-}
+
 module Data.WalkableMap where
 
-import qualified Data.Map.Strict as M
-import qualified Data.Maybe as Maybe
-import Data.Point
+import qualified Data.List          as L
+import qualified Data.Map.Strict    as M
+import qualified Data.Maybe         as Maybe
+import           Data.Point
 import qualified Data.PriorityQueue as PQ
 
 data WalkableMap a =
   WalkableMap
-    { content :: M.Map Point a
+    { content      :: M.Map Point a
     , defaultValue :: a
-    , obstacles :: [a]
-    , _visited :: [Point]
-    , _queue :: PQ.Queue [Point]
+    , obstacles    :: [a]
+    , _visited     :: [Point]
+    , _queue       :: PQ.Queue [Point]
+    , _cache       :: [[Point]]
     }
 
 singleton :: (Eq a) => a -> WalkableMap a
@@ -25,6 +29,7 @@ fromList list value =
     , obstacles = []
     , _visited = []
     , _queue = []
+    , _cache = []
     }
 
 update :: (Eq a) => Point -> a -> WalkableMap a -> WalkableMap a
@@ -36,7 +41,7 @@ exists :: (Eq a) => Point -> WalkableMap a -> Bool
 exists pos m =
   case M.lookup pos (content m) of
     Nothing -> False
-    Just _ -> True
+    Just _  -> True
 
 valueAt :: (Eq a) => WalkableMap a -> Point -> a
 valueAt m pos = Maybe.fromMaybe (defaultValue m) $ M.lookup pos (content m)
@@ -48,6 +53,16 @@ partition :: (Eq a) => Int -> [a] -> [[a]]
 partition _ [] = []
 partition n xs = take n xs : partition n (drop n xs)
 
+fetchFromCache :: (Eq a) => Point -> Point -> WalkableMap a -> Maybe [Point]
+fetchFromCache from to m@WalkableMap {..}
+  | null pathWithTo = Nothing
+  | otherwise =
+    Just (L.minimumBy (\x y -> compare (length x) (length y)) candidates)
+  where
+    pathWithFrom = filter (elem from) _cache
+    pathWithTo = filter (elem to) pathWithFrom
+    candidates = filter (any (\x -> valueAt m x `elem` obstacles)) pathWithTo
+
 pathTo ::
      (Eq a)
   => PQ.Item [Point]
@@ -55,10 +70,18 @@ pathTo ::
   -> WalkableMap a
   -> Maybe (PQ.Item [Point])
 pathTo from to m
+  | Maybe.isJust fromCache =
+    Just
+      PQ.Item
+        { PQ.location = to
+        , PQ.extra = Maybe.fromMaybe [] fromCache
+        , PQ.score = 0
+        }
   | PQ.location from == to = Just from
   | null queue = Nothing
   | otherwise = pathTo next to m {_queue = queue', _visited = visited}
   where
+    fromCache = fetchFromCache (PQ.location from) to m
     visited = PQ.location from : _visited m
     queue = foldl PQ.addItem (_queue m) scored
       where

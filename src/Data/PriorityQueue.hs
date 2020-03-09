@@ -1,12 +1,12 @@
 module Data.PriorityQueue where
 
-import Data.Point
+import           Data.Point
 
 data Item a =
   Item
     { location :: Point
-    , score :: Int
-    , extra :: a
+    , score    :: Int
+    , extra    :: a
     }
   deriving (Show, Eq)
 
